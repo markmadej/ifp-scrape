@@ -149,8 +149,11 @@ def getOpenPointsFromString(ratingString):
         )
 
 def getWomensPointsFromString(ratingString):
+    # This should match without the leading .*\D but in my experience that is
+    # not happening and Python regexes need to match the whole string, or at least
+    # the match needs to start with the first character.  Shrug.
     return getPointsFromStringWithRegex(
-        '(\d+)/(\d+) Women\'s Singles/Doubles Points', ratingString
+        '.*\D(\d+)/(\d+) Women\'s Singles/Doubles Points', ratingString
         )
 
 def getPointsFromStringWithRegex(regex, ratingString):
