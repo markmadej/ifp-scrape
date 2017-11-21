@@ -23,34 +23,34 @@ class TestIfpScrape(unittest.TestCase):
     # our last completed character, and the crawl can continue seamlessly from there on
     # restart.  If we have a consistent algorithm to determine the next character we can
     # make that happen.
-    def test_next_crawl_character_same_level(self):
-        currentCharacters = [
+    def test_next_crawl_sequence_same_level(self):
+        currentSequence = [
             "A",
             "ABC",
             "MARKMADEJ",
             "CZ",
             "Z"
         ]
-        nextCrawlCharacters = [
+        nextCrawlSequence = [
             "B",
             "ABD",
             "MARKMADEK",
             "D",
             None
         ]
-        for i in range(0, len(currentCharacters)):
-            self.assertEqual(ifpscrape.getNextSameLevelCharacter(
-                currentCharacters[i]), nextCrawlCharacters[i])
+        for i in range(0, len(currentSequence)):
+            self.assertEqual(ifpscrape.getNextSameLevelSequence(
+                currentSequence[i]), nextCrawlSequence[i])
 
-    def test_next_crawl_character_deeper_level(self):
-        currentCharacters = [
+    def test_next_crawl_sequence_deeper_level(self):
+        currentSequence = [
             "A",
             "ABC",
             "MARKMADEJ",
             "CZ",
             "Z"
         ]
-        nextCrawlCharacters = [
+        nextCrawlSequence = [
             "AA",
             "ABCA",
             "MARKMADEJA",
@@ -58,9 +58,9 @@ class TestIfpScrape(unittest.TestCase):
             "ZA",
             None
         ]
-        for i in range(0, len(currentCharacters)):
-            self.assertEqual(ifpscrape.getNextDeeperLevelCharacter(
-                currentCharacters[i]), nextCrawlCharacters[i])
+        for i in range(0, len(currentSequence)):
+            self.assertEqual(ifpscrape.getNextDeeperLevelSequence(
+                currentSequence[i]), nextCrawlSequence[i])
 
 
 

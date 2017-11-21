@@ -85,6 +85,13 @@ def nameCrawl(driver, prefix = ""):
             allNames.update(names)
     return allNames
 
+def getNextSameLevelSequence(sequence):
+    if sequence is None or sequence == 'Z':
+        return None
+
+    return sequence + 'A'
+
+
 def loadNamesWithText(driver, searchStr):
     elem = driver.find_element_by_name("R_Input")
     elem.clear()
