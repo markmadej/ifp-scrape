@@ -1,7 +1,24 @@
 import unittest
 import ifpscrape
+import os
 
 class TestIfpScrape(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        try:
+            os.remove('/tmp/testfile1.txt')
+            os.remove('/tmp/testfile2.txt')
+        except:
+            pass
+
+    @classmethod
+    def tearDownClass(cls):
+        try:
+            os.remove('/tmp/testfile1.txt')
+            os.remove('/tmp/testfile2.txt')
+        except:
+            pass
 
     def test_upper(self):
         pointStrings = [
@@ -69,12 +86,31 @@ class TestIfpScrape(unittest.TestCase):
             "HANNAH DEE SMITH (MS)",
             "MARKUS HAYMAN (MS)"
         }
-        filename = '/tmp/testfile.txt'
-        ifpscrape.saveNamesToFile(originalNames, filename)
+        filename = '/tmp/testfile1.txt'
+        ifpscrape.saveNamesToNewFile(originalNames, filename)
         loadedNames = ifpscrape.loadNamesFromFile(filename)
         self.assertEqual(originalNames, loadedNames)
 
+    def test_append_file(self):
+        originalNames1 = {
+            "MARK MADEJ (CO)",
+            "BETH MADEJ (CO)"
+        }
+        originalNames2 = {
+            "HANNAH DEE SMITH (MS)",
+            "MARKUS HAYMAN (MS)"
+        }
+        filename = '/tmp/testfile2.txt'
 
+        ifpscrape.appendNamesToFile(originalNames1, filename)
+        loadedNames1 = ifpscrape.loadNamesFromFile(filename)
+        self.assertEqual(originalNames1, loadedNames1)
+
+        ifpscrape.appendNamesToFile(originalNames2, filename)
+        loadedNames2 = ifpscrape.loadNamesFromFile(filename)
+        combinedNames = originalNames1
+        combinedNames.update(originalNames2)
+        self.assertEqual(combinedNames, loadedNames2)
 
 if __name__ == '__main__':
     unittest.main()

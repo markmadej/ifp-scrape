@@ -43,11 +43,10 @@ def loadNamesFromFile(filename):
         allNames.add(nextName)
         nextName = f.readline().decode('utf8').rstrip()
     f.close()
-    print("Retrieved " + `len(allNames)` + " from file " + filename)
     return allNames
 
-def saveNamesToFile(names, filename):
-    f = open(filename, 'w')
+def saveNamesToNewFile(names, filename):
+    f = open(filename, 'w+')
     for name in names:
         try:
             writeName = name + '\n'
@@ -56,7 +55,17 @@ def saveNamesToFile(names, filename):
         except:
             print("error writing name : " + name)
     f.close()
-    print("Wrote " + `len(names)` + " names to the file " + filename)
+
+def appendNamesToFile(names, filename):
+    f = open(filename, 'a+')
+    for name in names:
+        try:
+            writeName = name + '\n'
+            writeName = writeName.encode('utf8')
+            f.write(writeName)
+        except:
+            print("error writing name : " + name)
+    f.close()
 
 def printAllNames(names):
     print("Found a total of " + `len(names)` + " names :")
@@ -85,8 +94,17 @@ def nameCrawl(driver, prefix = ""):
             allNames.update(names)
     return allNames
 
+def nameCrawl(driver):
+    allNames = set()
+    sequence = 'A'
+    while (sequence != None):
+        loadNamesWithText(driver, sequence)
+        names = getAllVisibleNames(driver)
+
 def getNextSameLevelSequence(sequence):
-    if sequence is None or sequence == 'Z':
+    if sequence is None:
+        return 'A'
+    if sequence == 'Z':
         return None
 
     alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
