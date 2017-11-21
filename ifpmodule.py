@@ -62,6 +62,46 @@ def saveNamesToNewFile(names, filename):
             print("error writing name : " + name)
     f.close()
 
+def savePointsToNewFile(pointDict, filename):
+    f = open(filename, 'w+')
+    for name in list(pointDict.keys()):
+        try:
+            points = pointDict[name];
+            writeStr = createPointStringFromNameAndPoints(name, points) + "\n"
+            writeStr = writeStr.encode('utf8')
+            f.write(writeStr)
+        except:
+            print("error writing points string : " + name)
+    f.close()
+
+def appendPointsToFile(pointDict, filename):
+    f = open(filename, 'a+')
+    for name in list(pointDict.keys()):
+        try:
+            points = pointDict[name];
+            writeStr = createPointStringFromNameAndPoints(name, points) + "\n"
+            writeStr = writeStr.encode('utf8')
+            f.write(writeStr)
+        except:
+            print("error writing points string : " + name)
+    f.close()
+
+def loadPointsFromFile(filename):
+    try:
+        f = open(filename, 'r')
+    except IOError:
+        print("Couldn't open file, continuing with blank dictionary.")
+        return dict()
+
+    allPoints = dict()
+    nextPointStr = f.readline().decode('utf8').rstrip()
+    while nextPointStr != "":
+        (name, points) = deserializePoints(nextPointStr)
+        allPoints[name] = points
+        nextPointStr = f.readline().decode('utf8').rstrip()
+    f.close()
+    return allPoints
+
 def emptyFile(filename):
     f = open(filename, 'w+')
     f.close()
@@ -207,7 +247,7 @@ def getAllVisibleNames(driver):
         return names
     finally:
         return names
-    
+
 def createPointStringFromNameAndPoints(name, pointTuple):
     str = "{0}$$$${1},{2},{3},{4}".format(
         name,
@@ -217,6 +257,14 @@ def createPointStringFromNameAndPoints(name, pointTuple):
         pointTuple[3]
     )
     return str
+
+def deserializePoints(pointStr):
+    nameAndPoints = pointStr.split("$$$$") # Separates the two halves of the string
+    name = nameAndPoints[0]
+    points = nameAndPoints[1].split(',')
+    pointTuple = (int(points[0]), int(points[1]), int(points[2]), int(points[3]))
+    return (name, pointTuple)
+
 
 if __name__ == '__main__':
     print("This class should not be run directly.  Please look at the README.")

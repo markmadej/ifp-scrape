@@ -11,6 +11,8 @@ class TestIfpModule(unittest.TestCase):
             os.remove('/tmp/testfile2.txt')
             os.remove('/tmp/testsequence.txt')
             os.remove('/tmp/testempty.txt')
+            os.remove('/tmp/testpoints.txt')
+            os.remove('/tmp/testpoints2.txt')
         except:
             pass
 
@@ -21,6 +23,8 @@ class TestIfpModule(unittest.TestCase):
             os.remove('/tmp/testfile2.txt')
             os.remove('/tmp/testsequence.txt')
             os.remove('/tmp/testempty.txt')
+            os.remove('/tmp/testpoints.txt')
+            os.remove('/tmp/testpoints2.txt')
         except:
             pass
 
@@ -180,6 +184,58 @@ class TestIfpModule(unittest.TestCase):
         for i in range(0, len(existingNames)):
             pointString = ifpmodule.createPointStringFromNameAndPoints(existingNames[i], points[i])
             self.assertEqual(pointString, desiredPointStrings[i])
+
+    def test_deserialize_points(self):
+        desiredPointStrings = [
+            "MARK MADEJ (CO)$$$$1600,1601,1602,1603",
+            "BETH MADEJ (CO)$$$$1000,1100,1200,1300",
+            "HANNAH DEE SMITH (MS)$$$$1555,1666,1777,1888",
+            "MARKUS HAYMAN (MS)$$$$5555,6666,7777,8888"
+        ]
+
+        deserializedPoints = [
+            ("MARK MADEJ (CO)", (1600, 1601, 1602, 1603)),
+            ("BETH MADEJ (CO)", (1000, 1100, 1200, 1300)),
+            ("HANNAH DEE SMITH (MS)", (1555, 1666, 1777, 1888)),
+            ("MARKUS HAYMAN (MS)", (5555, 6666, 7777, 8888))
+        ]
+
+        for i in range(0, len(desiredPointStrings)):
+            (name, points) = ifpmodule.deserializePoints(desiredPointStrings[i])
+            self.assertEqual(name, deserializedPoints[i][0])
+            self.assertEqual(points, deserializedPoints[i][1])
+
+
+    def test_save_and_retrieve_points(self):
+        originalPoints = dict([
+            ("MARK MADEJ (CO)", (1600, 1601, 1602, 1603)),
+            ("BETH MADEJ (CO)", (1000, 1100, 1200, 1300)),
+            ("HANNAH DEE SMITH (MS)", (1555, 1666, 1777, 1888)),
+            ("MARKUS HAYMAN (MS)", (5555, 6666, 7777, 8888))
+        ])
+        filename = '/tmp/testpoints.txt'
+        ifpmodule.savePointsToNewFile(originalPoints, filename)
+        retrievedPoints = ifpmodule.loadPointsFromFile(filename)
+        self.assertEqual(originalPoints, retrievedPoints)
+
+    def test_append_points(self):
+        originalPoints1 = dict([
+            ("MARK MADEJ (CO)", (1600, 1601, 1602, 1603)),
+            ("BETH MADEJ (CO)", (1000, 1100, 1200, 1300))
+        ])
+        originalPoints2 = dict ([
+            ("HANNAH DEE SMITH (MS)", (1555, 1666, 1777, 1888)),
+            ("MARKUS HAYMAN (MS)", (5555, 6666, 7777, 8888))
+        ])
+
+        filename = '/tmp/testpoints2.txt'
+        ifpmodule.appendPointsToFile(originalPoints1, filename)
+        ifpmodule.appendPointsToFile(originalPoints2, filename)
+
+        combinedPoints = originalPoints1
+        combinedPoints.update(originalPoints2)
+        retrievedPoints = ifpmodule.loadPointsFromFile(filename)
+        self.assertEqual(combinedPoints, retrievedPoints)
 
 if __name__ == '__main__':
     unittest.main()
