@@ -1,14 +1,16 @@
 import unittest
-import ifpscrape
+import ifpmodule
 import os
 
-class TestIfpScrape(unittest.TestCase):
+class TestIfpModule(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
         try:
             os.remove('/tmp/testfile1.txt')
             os.remove('/tmp/testfile2.txt')
+            os.remove('/tmp/testsequence.txt')
+            os.remove('/tmp/testempty.txt')
         except:
             pass
 
@@ -17,6 +19,8 @@ class TestIfpScrape(unittest.TestCase):
         try:
             os.remove('/tmp/testfile1.txt')
             os.remove('/tmp/testfile2.txt')
+            os.remove('/tmp/testsequence.txt')
+            os.remove('/tmp/testempty.txt')
         except:
             pass
 
@@ -34,7 +38,7 @@ class TestIfpScrape(unittest.TestCase):
             (1472, 1925, 5588, 7149)
         ]
         for i in range(0, len(pointStrings)):
-            self.assertEqual(ifpscrape.getRankFromText(pointStrings[i]), resultTuples[i])
+            self.assertEqual(ifpmodule.getRankFromText(pointStrings[i]), resultTuples[i])
 
     # The intention with the next crawl character is that we should be able to save
     # our last completed character, and the crawl can continue seamlessly from there on
@@ -46,6 +50,7 @@ class TestIfpScrape(unittest.TestCase):
             "ABC",
             "MARKMADEJ",
             "CZ",
+            "AZZ",
             "Z"
         ]
         nextCrawlSequence = [
@@ -53,10 +58,11 @@ class TestIfpScrape(unittest.TestCase):
             "ABD",
             "MARKMADEK",
             "D",
+            "B",
             None
         ]
         for i in range(0, len(currentSequence)):
-            self.assertEqual(ifpscrape.getNextSameLevelSequence(
+            self.assertEqual(ifpmodule.getNextSameLevelSequence(
                 currentSequence[i]), nextCrawlSequence[i])
 
     def test_next_crawl_sequence_deeper_level(self):
@@ -76,7 +82,7 @@ class TestIfpScrape(unittest.TestCase):
             None
         ]
         for i in range(0, len(currentSequence)):
-            self.assertEqual(ifpscrape.getNextDeeperLevelSequence(
+            self.assertEqual(ifpmodule.getNextDeeperLevelSequence(
                 currentSequence[i]), nextCrawlSequence[i])
 
     def test_files_write_and_read_same_data(self):
@@ -87,8 +93,8 @@ class TestIfpScrape(unittest.TestCase):
             "MARKUS HAYMAN (MS)"
         }
         filename = '/tmp/testfile1.txt'
-        ifpscrape.saveNamesToNewFile(originalNames, filename)
-        loadedNames = ifpscrape.loadNamesFromFile(filename)
+        ifpmodule.saveNamesToNewFile(originalNames, filename)
+        loadedNames = ifpmodule.loadNamesFromFile(filename)
         self.assertEqual(originalNames, loadedNames)
 
     def test_append_file(self):
@@ -102,15 +108,78 @@ class TestIfpScrape(unittest.TestCase):
         }
         filename = '/tmp/testfile2.txt'
 
-        ifpscrape.appendNamesToFile(originalNames1, filename)
-        loadedNames1 = ifpscrape.loadNamesFromFile(filename)
+        ifpmodule.appendNamesToFile(originalNames1, filename)
+        loadedNames1 = ifpmodule.loadNamesFromFile(filename)
         self.assertEqual(originalNames1, loadedNames1)
 
-        ifpscrape.appendNamesToFile(originalNames2, filename)
-        loadedNames2 = ifpscrape.loadNamesFromFile(filename)
+        ifpmodule.appendNamesToFile(originalNames2, filename)
+        loadedNames2 = ifpmodule.loadNamesFromFile(filename)
         combinedNames = originalNames1
         combinedNames.update(originalNames2)
         self.assertEqual(combinedNames, loadedNames2)
+
+    def test_save_and_retrieve_last_sequence(self):
+        originalSequence = 'ROFL'
+        ifpmodule.saveLastSequenceToFile(originalSequence, '/tmp/testsequence.txt')
+        sequenceFromFile = ifpmodule.getLastSequenceFromFile('/tmp/testsequence.txt')
+        self.assertEqual(originalSequence, sequenceFromFile)
+
+    def test_get_new_names(self):
+        existingNames = {
+            "MARK MADEJ (CO)",
+            "BETH MADEJ (CO)",
+            "HANNAH DEE SMITH (MS)",
+            "MARKUS HAYMAN (MS)"
+        }
+        actualNewName = "TONY SPREDEMAN (FL)"
+        newNames = {
+            "MARKUS HAYMAN (MS)",
+            actualNewName,
+            "HANNAH DEE SMITH (MS)"
+        }
+
+        derivedNewNames = ifpmodule.getUniqueNewNamesOnlyFromAllNamesAndNewList(existingNames, newNames)
+        self.assertEqual(len(derivedNewNames), 1)
+        self.assertEqual(list(derivedNewNames)[0], actualNewName)
+
+    def test_empty_file(self):
+        names = {
+            "MARK MADEJ (CO)",
+            "BETH MADEJ (CO)"
+        }
+        emptyFilename = '/tmp/testempty.txt'
+        ifpmodule.saveNamesToNewFile(names, emptyFilename)
+        loadedNames = ifpmodule.loadNamesFromFile(emptyFilename)
+        self.assertEqual(len(loadedNames), 2)
+        ifpmodule.emptyFile(emptyFilename)
+        loadedNames = ifpmodule.loadNamesFromFile(emptyFilename)
+        self.assertEqual(len(loadedNames), 0)
+
+    def test_create_points_string(self):
+        existingNames = [
+            "MARK MADEJ (CO)",
+            "BETH MADEJ (CO)",
+            "HANNAH DEE SMITH (MS)",
+            "MARKUS HAYMAN (MS)"
+        ]
+
+        points = [
+            (1600, 1601, 1602, 1603),
+            (1000, 1100, 1200, 1300),
+            (1555, 1666, 1777, 1888),
+            (5555, 6666, 7777, 8888)
+        ]
+
+        desiredPointStrings = [
+            "MARK MADEJ (CO)$$$$1600,1601,1602,1603",
+            "BETH MADEJ (CO)$$$$1000,1100,1200,1300",
+            "HANNAH DEE SMITH (MS)$$$$1555,1666,1777,1888",
+            "MARKUS HAYMAN (MS)$$$$5555,6666,7777,8888"
+        ]
+
+        for i in range(0, len(existingNames)):
+            pointString = ifpmodule.createPointStringFromNameAndPoints(existingNames[i], points[i])
+            self.assertEqual(pointString, desiredPointStrings[i])
 
 if __name__ == '__main__':
     unittest.main()
