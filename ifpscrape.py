@@ -89,8 +89,18 @@ def getNextSameLevelSequence(sequence):
     if sequence is None or sequence == 'Z':
         return None
 
-    return sequence + 'A'
+    alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 
+    lastSequenceChar = sequence[-1]
+    if lastSequenceChar == 'Z':
+        # Drop back one level
+        lastSequenceChar = sequence[-2]
+        sequence = sequence[0:-1]
+    idx = alphabet.find(lastSequenceChar)
+    return sequence[0:-1] + alphabet[idx+1]
+
+def getNextDeeperLevelSequence(sequence):
+    return sequence + 'A'
 
 def loadNamesWithText(driver, searchStr):
     elem = driver.find_element_by_name("R_Input")
