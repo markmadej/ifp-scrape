@@ -138,26 +138,31 @@ def getRankFromText(ratingString):
     # Format:
     #1447/1673 Singles/Doubles Points
     #2068/2044 Women's Singles/Doubles Points
-    openRe = re.compile('(\d+)/(\d+) Singles/Doubles Points')
-    womenRe = re.compile('(\d+)/(\d+) Women''s Singles/Doubles Points')
+    # from the "lblRating" field in HTML
+    openTuple = getOpenPointsFromString(ratingString)
+    womenTuple = getWomensPointsFromString(ratingString)
+    return (openTuple[0], openTuple[1], womenTuple[0], womenTuple[1])
 
-    openSingles = 0
-    openDoubles = 0
-    womenSingles = 0
-    womenDoubles = 0
+def getOpenPointsFromString(ratingString):
+    return getPointsFromStringWithRegex(
+        '(\d+)/(\d+) Singles/Doubles Points', ratingString
+        )
 
-    openM = openRe.match(ratingString)
-    if openM != None:
-        openSingles = int(openM.group(1))
-        openDoubles = int(openM.group(2))
+def getWomensPointsFromString(ratingString):
+    return getPointsFromStringWithRegex(
+        '(\d+)/(\d+) Women\'s Singles/Doubles Points', ratingString
+        )
 
-    womenM = womenRe.match(ratingString)
-    if womenM != None:
-        womenSingles = int(openM.group(1))
-        womenDoubles = int(openM.group(2))
+def getPointsFromStringWithRegex(regex, ratingString):
+    singles = 0
+    doubles = 0
+    regexp = re.compile(regex)
+    match = regexp.match(ratingString)
+    if match != None:
+        singles = int(match.group(1))
+        doubles = int(match.group(2))
 
-    return (openSingles, openDoubles, womenSingles, womenDoubles)
-
+    return (singles, doubles)
 
 def getAllVisibleNames(driver):
     names = set()
