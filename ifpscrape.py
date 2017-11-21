@@ -17,7 +17,7 @@ def main():
 
     printAllNames(allNames)
 
-    saveNamesToFile(filename, allNames)
+    saveNamesToFile(allNames, filename)
 
     #print("Now getting rankings...")
     #for name in allNames:
@@ -38,15 +38,15 @@ def loadNamesFromFile(filename):
         return set()
 
     allNames = set()
-    nextName = f.readline()
+    nextName = f.readline().decode('utf8').rstrip()
     while nextName != "":
         allNames.add(nextName)
-        nextName = f.readline().decode('utf8')
+        nextName = f.readline().decode('utf8').rstrip()
     f.close()
     print("Retrieved " + `len(allNames)` + " from file " + filename)
     return allNames
 
-def saveNamesToFile(filename, names):
+def saveNamesToFile(names, filename):
     f = open(filename, 'w')
     for name in names:
         try:

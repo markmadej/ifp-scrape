@@ -62,6 +62,17 @@ class TestIfpScrape(unittest.TestCase):
             self.assertEqual(ifpscrape.getNextDeeperLevelSequence(
                 currentSequence[i]), nextCrawlSequence[i])
 
+    def test_files_write_and_read_same_data(self):
+        originalNames = {
+            "MARK MADEJ (CO)",
+            "TONY SPREDEMAN (FL)",
+            "HANNAH DEE SMITH (MS)",
+            "MARKUS HAYMAN (MS)"
+        }
+        filename = '/tmp/testfile.txt'
+        ifpscrape.saveNamesToFile(originalNames, filename)
+        loadedNames = ifpscrape.loadNamesFromFile(filename)
+        self.assertEqual(originalNames, loadedNames)
 
 
 
