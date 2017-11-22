@@ -43,7 +43,7 @@ class TestIfpModule(unittest.TestCase):
             (1472, 1925, 5588, 7149)
         ]
         for i in range(0, len(pointStrings)):
-            self.assertEqual(ifpmodule.getRankFromText(pointStrings[i]), resultTuples[i])
+            self.assertEqual(ifppoints.getRankFromText(pointStrings[i]), resultTuples[i])
 
     # The intention with the next crawl character is that we should be able to save
     # our last completed character, and the crawl can continue seamlessly from there on
@@ -183,7 +183,7 @@ class TestIfpModule(unittest.TestCase):
         ]
 
         for i in range(0, len(existingNames)):
-            pointString = ifpmodule.createPointStringFromNameAndPoints(existingNames[i], points[i])
+            pointString = ifppoints.createPointStringFromNameAndPoints(existingNames[i], points[i])
             self.assertEqual(pointString, desiredPointStrings[i])
 
     def test_deserialize_points(self):
@@ -215,7 +215,7 @@ class TestIfpModule(unittest.TestCase):
             ("MARKUS HAYMAN (MS)", (5555, 6666, 7777, 8888))
         ])
         filename = '/tmp/testpoints.txt'
-        ifpmodule.savePointsToNewFile(originalPoints, filename)
+        ifppoints.savePointsToNewFile(originalPoints, filename)
         retrievedPoints = ifppoints.loadPointsFromFile(filename)
         self.assertEqual(originalPoints, retrievedPoints)
 
@@ -230,8 +230,8 @@ class TestIfpModule(unittest.TestCase):
         ])
 
         filename = '/tmp/testpoints2.txt'
-        ifpmodule.appendPointsToFile(originalPoints1, filename)
-        ifpmodule.appendPointsToFile(originalPoints2, filename)
+        ifppoints.appendPointsToFile(originalPoints1, filename)
+        ifppoints.appendPointsToFile(originalPoints2, filename)
 
         combinedPoints = originalPoints1
         combinedPoints.update(originalPoints2)

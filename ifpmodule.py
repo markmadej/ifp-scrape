@@ -62,30 +62,6 @@ def saveNamesToNewFile(names, filename):
             print("error writing name : " + name)
     f.close()
 
-def savePointsToNewFile(pointDict, filename):
-    f = open(filename, 'w+')
-    for name in list(pointDict.keys()):
-        try:
-            points = pointDict[name];
-            writeStr = createPointStringFromNameAndPoints(name, points) + "\n"
-            writeStr = writeStr.encode('utf8')
-            f.write(writeStr)
-        except:
-            print("error writing points string : " + name)
-    f.close()
-
-def appendPointsToFile(pointDict, filename):
-    f = open(filename, 'a+')
-    for name in list(pointDict.keys()):
-        try:
-            points = pointDict[name];
-            writeStr = createPointStringFromNameAndPoints(name, points) + "\n"
-            writeStr = writeStr.encode('utf8')
-            f.write(writeStr)
-        except:
-            print("error writing points string : " + name)
-    f.close()
-
 def emptyFile(filename):
     f = open(filename, 'w+')
     f.close()
@@ -159,8 +135,9 @@ def getRankForPlayer(driver, playerName):
 
     # Dropdown should be populated.  Find the right item and click on it
     ct = 0
-    foundPlayerRow = None
+
     try :
+        foundPlayerRow = None
         dditem = driver.find_element_by_id("R_c" + `ct`)
 
         while dditem :
@@ -170,53 +147,19 @@ def getRankForPlayer(driver, playerName):
             else:
                 ct = ct + 1
                 dditem = driver.find_element_by_id("R_c" + `ct`)
-    finally:
-        pass
 
-    if foundPlayerRow != None:
-        foundPlayerRow.click()
-        WebDriverWait(driver, 10).until(
-            EC.visibility_of_element_located((By.ID, 'lblRating'))
-        )
-        elem = driver.find_element_by_id("lblRating")
-        rankData = getRankFromText(elem.text)
-        return rankData
-    else:
-        print("Could not find data for player " + playerName)
+        if foundPlayerRow != None:
+            foundPlayerRow.click()
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.ID, 'lblRating'))
+            )
+            elem = driver.find_element_by_id("lblRating")
+            rankData = getRankFromText(elem.text)
+            return rankData
+
+    except:
+        print("Could not retrieve data for player " + playerName)
         return None
-
-def getRankFromText(ratingString):
-    # Format:
-    #1447/1673 Singles/Doubles Points
-    #2068/2044 Women's Singles/Doubles Points
-    # from the "lblRating" field in HTML
-    openTuple = getOpenPointsFromString(ratingString)
-    womenTuple = getWomensPointsFromString(ratingString)
-    return (openTuple[0], openTuple[1], womenTuple[0], womenTuple[1])
-
-def getOpenPointsFromString(ratingString):
-    return getPointsFromStringWithRegex(
-        '(\d+)/(\d+) Singles/Doubles Points', ratingString
-        )
-
-def getWomensPointsFromString(ratingString):
-    # This should match without the leading .*\D but in my experience that is
-    # not happening and Python regexes need to match the whole string, or at least
-    # the match needs to start with the first character.  Shrug.
-    return getPointsFromStringWithRegex(
-        '.*\D(\d+)/(\d+) Women\'s Singles/Doubles Points', ratingString
-        )
-
-def getPointsFromStringWithRegex(regex, ratingString):
-    singles = 0
-    doubles = 0
-    regexp = re.compile(regex)
-    match = regexp.match(ratingString)
-    if match != None:
-        singles = int(match.group(1))
-        doubles = int(match.group(2))
-
-    return (singles, doubles)
 
 def getAllVisibleNames(driver):
     names = set()
@@ -231,16 +174,6 @@ def getAllVisibleNames(driver):
         return names
     finally:
         return names
-
-def createPointStringFromNameAndPoints(name, pointTuple):
-    str = "{0}$$$${1},{2},{3},{4}".format(
-        name,
-        pointTuple[0],
-        pointTuple[1],
-        pointTuple[2],
-        pointTuple[3]
-    )
-    return str
 
 if __name__ == '__main__':
     print("This class should not be run directly.  Please look at the README.")
