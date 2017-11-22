@@ -1,5 +1,6 @@
 import unittest
 import ifpmodule
+import ifppointcollection as ifppoints
 import os
 
 class TestIfpModule(unittest.TestCase):
@@ -201,7 +202,7 @@ class TestIfpModule(unittest.TestCase):
         ]
 
         for i in range(0, len(desiredPointStrings)):
-            (name, points) = ifpmodule.deserializePoints(desiredPointStrings[i])
+            (name, points) = ifppoints.deserializePoints(desiredPointStrings[i])
             self.assertEqual(name, deserializedPoints[i][0])
             self.assertEqual(points, deserializedPoints[i][1])
 
@@ -215,7 +216,7 @@ class TestIfpModule(unittest.TestCase):
         ])
         filename = '/tmp/testpoints.txt'
         ifpmodule.savePointsToNewFile(originalPoints, filename)
-        retrievedPoints = ifpmodule.loadPointsFromFile(filename)
+        retrievedPoints = ifppoints.loadPointsFromFile(filename)
         self.assertEqual(originalPoints, retrievedPoints)
 
     def test_append_points(self):
@@ -234,7 +235,7 @@ class TestIfpModule(unittest.TestCase):
 
         combinedPoints = originalPoints1
         combinedPoints.update(originalPoints2)
-        retrievedPoints = ifpmodule.loadPointsFromFile(filename)
+        retrievedPoints = ifppoints.loadPointsFromFile(filename)
         self.assertEqual(combinedPoints, retrievedPoints)
 
 if __name__ == '__main__':
