@@ -61,6 +61,44 @@ def deserializePoints(pointStr):
     pointTuple = (int(points[0]), int(points[1]), int(points[2]), int(points[3]))
     return (name, pointTuple)
 
+def getRankForPlayer(driver, playerName):
+    elem = driver.find_element_by_name("R_Input")
+    elem.clear()
+
+    # First chop off the trailing (state) from the end - doesnt work with IFP interface
+    parenLoc = playerName.find('(')
+    shorterName = playerName[0:parenLoc-1]
+    elem.send_keys(shorterName)
+    time.sleep(3)
+
+    # Dropdown should be populated.  Find the right item and click on it
+    ct = 0
+
+    try :
+        foundPlayerRow = None
+        dditem = driver.find_element_by_id("R_c" + `ct`)
+
+        while dditem :
+            if dditem.text == playerName:
+                foundPlayerRow = dditem
+                break
+            else:
+                ct = ct + 1
+                dditem = driver.find_element_by_id("R_c" + `ct`)
+
+        if foundPlayerRow != None:
+            foundPlayerRow.click()
+            WebDriverWait(driver, 10).until(
+                EC.visibility_of_element_located((By.ID, 'lblRating'))
+            )
+            elem = driver.find_element_by_id("lblRating")
+            rankData = getRankFromText(elem.text)
+            return rankData
+
+    except:
+        print("Could not retrieve data for player " + playerName)
+        return None
+
 def getRankFromText(ratingString):
     # Format:
     #1447/1673 Singles/Doubles Points

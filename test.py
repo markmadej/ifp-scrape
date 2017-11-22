@@ -1,6 +1,7 @@
 import unittest
 import ifpmodule
 import ifppointcollection as ifppoints
+import ifpnamecollection as ifpname
 import os
 
 class TestIfpModule(unittest.TestCase):
@@ -67,7 +68,7 @@ class TestIfpModule(unittest.TestCase):
             None
         ]
         for i in range(0, len(currentSequence)):
-            self.assertEqual(ifpmodule.getNextSameLevelSequence(
+            self.assertEqual(ifpname.getNextSameLevelSequence(
                 currentSequence[i]), nextCrawlSequence[i])
 
     def test_next_crawl_sequence_deeper_level(self):
@@ -87,7 +88,7 @@ class TestIfpModule(unittest.TestCase):
             None
         ]
         for i in range(0, len(currentSequence)):
-            self.assertEqual(ifpmodule.getNextDeeperLevelSequence(
+            self.assertEqual(ifpname.getNextDeeperLevelSequence(
                 currentSequence[i]), nextCrawlSequence[i])
 
     def test_files_write_and_read_same_data(self):
