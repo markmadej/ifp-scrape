@@ -14,6 +14,10 @@ I've only run this on a Mac - you may experience some hiccups on other platforms
 
 The scraping process is broken down into two parts.  First is the collection of all names.  The second is going through each name and extracting the singles/doubles points for both open and women categories.  The two processes communicate by sharing a data file.  This is not the most robust design, but it suited me fine as a first attempt at this.   
 
+### Speed caveat
+
+Please note that this script takes a LONG time to run!  The name collection algorithm is very slow and inefficient as currently designed.  Expect both the name and point collection scripts to take multiple days to complete.  
+
 ### Name collection process
 
 To kick off the name collection process, run this command:
@@ -35,6 +39,8 @@ python2 ifppointcollection.py
 ```
 
 This script loads all names from the `allNames.txt` file (from the ifpnamecollection process).  It then loads everything in `allPoints.txt`, the aggregation of names along with the 4 associated points.  The script then loops through all names found in `allNames.txt` but not `allPoints.txt`, and it attempts to retrieve that data.  The script finishes when all of those are attempted.  
+
+While you can have the name and point collection programs running concurrently, you'll need to restart the point collection process after the final names have been collected.  The point collection process loads those at the start of its run and will not pick up new names after that initial read.  
 
 ## Results
 
