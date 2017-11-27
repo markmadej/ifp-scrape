@@ -49,11 +49,11 @@ def loadPointsFromFile(filename):
         return dict()
 
     allPoints = dict()
-    nextPointStr = f.readline().decode('utf8').rstrip()
+    nextPointStr = f.readline().decode('utf-8').rstrip()
     while nextPointStr != "":
         (name, points) = deserializePoints(nextPointStr)
         allPoints[name] = points
-        nextPointStr = f.readline().decode('utf8').rstrip()
+        nextPointStr = f.readline().decode('utf-8').rstrip()
     f.close()
     return allPoints
 
@@ -140,7 +140,7 @@ def getPointsFromStringWithRegex(regex, ratingString):
     return (singles, doubles)
 
 def createPointStringFromNameAndPoints(name, pointTuple):
-    str = "{0}$$$${1},{2},{3},{4}".format(
+    str = u"{0}$$$${1},{2},{3},{4}".format(
         name,
         pointTuple[0],
         pointTuple[1],
@@ -155,10 +155,11 @@ def savePointsToNewFile(pointDict, filename):
         try:
             points = pointDict[name];
             writeStr = createPointStringFromNameAndPoints(name, points) + "\n"
-            writeStr = writeStr.encode('utf8')
+            writeStr = writeStr.encode('utf-8')
             f.write(writeStr)
         except:
             print("error writing points string : " + name)
+            print("Unexpected error :", sys.exc_info()[0], sys.exc_info()[1])
     f.close()
 
 def appendPointsToFile(pointDict, filename):
@@ -167,10 +168,11 @@ def appendPointsToFile(pointDict, filename):
         try:
             points = pointDict[name];
             writeStr = createPointStringFromNameAndPoints(name, points) + "\n"
-            writeStr = writeStr.encode('utf8')
+            writeStr = writeStr.encode('utf-8')
             f.write(writeStr)
         except:
             print("error writing points string : " + name)
+            print("Unexpected error :", sys.exc_info()[0], sys.exc_info()[1])
     f.close()
 
 if __name__ == '__main__':

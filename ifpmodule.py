@@ -12,7 +12,7 @@ def shutdown(driver):
 def saveLastSequenceToFile(sequence, filename):
     try:
         f = open(filename, 'w+')
-        f.write(sequence.encode('utf8'))
+        f.write(sequence.encode('utf-8'))
     except IOError:
         print("ERROR - Could not save sequence to file!  Last was " + sequence)
 
@@ -33,10 +33,10 @@ def loadNamesFromFile(filename):
         return set()
 
     allNames = set()
-    nextName = f.readline().decode('utf8').rstrip()
+    nextName = f.readline().decode('utf-8').rstrip()
     while nextName != "":
         allNames.add(nextName)
-        nextName = f.readline().decode('utf8').rstrip()
+        nextName = f.readline().decode('utf-8').rstrip()
     f.close()
     return allNames
 
@@ -45,7 +45,7 @@ def saveNamesToNewFile(names, filename):
     for name in names:
         try:
             writeName = name + '\n'
-            writeName = writeName.encode('utf8')
+            writeName = writeName.encode('utf-8')
             f.write(writeName)
         except:
             print("error writing name : " + name)
@@ -60,7 +60,7 @@ def appendNamesToFile(names, filename):
     for name in names:
         try:
             writeName = name + '\n'
-            writeName = writeName.encode('utf8')
+            writeName = writeName.encode('utf-8')
             f.write(writeName)
         except:
             print("error writing name : " + name)
