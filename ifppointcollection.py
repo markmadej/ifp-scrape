@@ -6,6 +6,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import NoSuchElementException
 
 def main():
     print("Starting point collection process.")
@@ -26,13 +27,17 @@ def pointCrawl(driver):
     namesNeedingPoints = getNamesWithoutPointsFromAllNamesAndPointNames(allNames, pointNames)
     print("There are {0} names found without points.".format(len(namesNeedingPoints)))
     pointsToSave = dict()
+
+    totalNamesToFind = len(namesNeedingPoints)
+    namesAttempted = 0
     for name in namesNeedingPoints:
+        namesAttempted = namesAttempted + 1
         print("Retrieving points for " + name)
         points = getRankForPlayer(driver, name)
         if points != None:
             pointsToSave[name] = points;
             currentBatchSize = currentBatchSize + 1
-            if (currentBatchSize >= batchSaveSize):
+            if (currentBatchSize >= batchSaveSize or namesAttempted >= namesNeedingPoints):
                 appendPointsToFile(pointsToSave, pointsFilename)
                 totalSaved += len(pointsToSave)
                 pointsToSave.clear()
@@ -40,6 +45,8 @@ def pointCrawl(driver):
                 print("Saved batch of {0} point totals, {1} total this session.").format(
                     batchSaveSize, totalSaved
                 )
+        else:
+            print("Could not get points for ", name)
 
 def loadPointsFromFile(filename):
     try:
@@ -68,13 +75,17 @@ def deserializePoints(pointStr):
     return (name, pointTuple)
 
 def getRankForPlayer(driver, playerName):
+    parenLoc = playerName.find('(')
+    shorterName = playerName[0:parenLoc-1]
+    return getRankForPlayerRecursive(driver, shorterName, playerName)
+
+def getRankForPlayerRecursive(driver, searchTerm, exactMatchName):
     elem = driver.find_element_by_name("R_Input")
     elem.clear()
 
     # First chop off the trailing (state) from the end - doesnt work with IFP interface
-    parenLoc = playerName.find('(')
-    shorterName = playerName[0:parenLoc-1]
-    elem.send_keys(shorterName)
+
+    elem.send_keys(searchTerm)
     time.sleep(3)
 
     # Dropdown should be populated.  Find the right item and click on it
@@ -85,7 +96,7 @@ def getRankForPlayer(driver, playerName):
         dditem = driver.find_element_by_id("R_c" + `ct`)
 
         while dditem :
-            if dditem.text == playerName:
+            if dditem.text == exactMatchName:
                 foundPlayerRow = dditem
                 break
             else:
@@ -101,6 +112,14 @@ def getRankForPlayer(driver, playerName):
             rankData = getRankFromText(elem.text)
             return rankData
 
+    except NoSuchElementException:
+        # This is an expected condition - sometimes the name will not be returned at all.
+        # Check the next shorter version of this name, if that exists.
+        if len(searchTerm) > 3:
+            return getRankForPlayerRecursive(driver, searchTerm[:-1], exactMatchName)
+        else:
+            print("Could not find point data for player ", exactMatchName, " even after multiple iterations.  Please insert data manually.")
+            return None
     except:
         print("Could not retrieve data for player " + playerName)
         print("Unexpected error :", sys.exc_info()[0], sys.exc_info()[1])

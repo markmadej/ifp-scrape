@@ -46,10 +46,6 @@ Once both the name and point collection scripts have run to completion, all resu
 
 Some of the names do have commas in them, so importing these into Excel or whatever via CSV import may not be that easy (hence the `$$$$` as a workaround separator).  Blame the data. ;)
 
-## Known issues
-
-Some names simply won't pull up properly when you type the name into the IFP box.  If you remove a few characters sometimes the name will show in the list.  It's weird, I don't know what causes it, and at the time I'm writing this I haven't fixed it yet.  My solution is to look at the console (currently `NoSuchElementException`s are being thrown) and manually go in and add those points to the file.  
-
 ## Running tests
 
 You can run the test suite via this command:
