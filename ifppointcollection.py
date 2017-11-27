@@ -1,5 +1,11 @@
 import ifpmodule
 import re
+import time
+import sys
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 def main():
     print("Starting point collection process.")
@@ -22,12 +28,12 @@ def pointCrawl(driver):
     pointsToSave = dict()
     for name in namesNeedingPoints:
         print("Retrieving points for " + name)
-        points = ifpmodule.getRankForPlayer(driver, name)
+        points = getRankForPlayer(driver, name)
         if points != None:
             pointsToSave[name] = points;
             currentBatchSize = currentBatchSize + 1
             if (currentBatchSize >= batchSaveSize):
-                ifpmodule.appendPointsToFile(pointsToSave, pointsFilename)
+                appendPointsToFile(pointsToSave, pointsFilename)
                 totalSaved += len(pointsToSave)
                 pointsToSave.clear()
                 currentBatchSize = 0
@@ -97,6 +103,7 @@ def getRankForPlayer(driver, playerName):
 
     except:
         print("Could not retrieve data for player " + playerName)
+        print("Unexpected error :", sys.exc_info()[0], sys.exc_info()[1])
         return None
 
 def getRankFromText(ratingString):

@@ -19,7 +19,7 @@ def nameCrawl(driver):
 
     while (sequence != None):
         ifpmodule.loadNamesWithText(driver, sequence)
-        newNames = ifpmodule.getAllVisibleNames(driver)
+        newNames = getAllVisibleNames(driver)
         goDeeper = (len(newNames) >= 48)
         uniqueNewNames = ifpmodule.getUniqueNewNamesOnlyFromAllNamesAndNewList(allNames, newNames)
         ifpmodule.appendNamesToFile(uniqueNewNames, namesFilename)
@@ -33,9 +33,9 @@ def nameCrawl(driver):
             print("Will go deeper, more than 47 entries found.")
         ifpmodule.saveLastSequenceToFile(sequence, sequenceFilename)
         if goDeeper:
-            sequence = ifpmodule.getNextDeeperLevelSequence(sequence)
+            sequence = getNextDeeperLevelSequence(sequence)
         else:
-            sequence = ifpmodule.getNextSameLevelSequence(sequence)
+            sequence = getNextSameLevelSequence(sequence)
     print("Congratulations!  You've retrieved all {0} names.".format(len(allNames)))
 
 def getNextSameLevelSequence(sequence):
