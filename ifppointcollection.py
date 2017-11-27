@@ -75,9 +75,16 @@ def deserializePoints(pointStr):
     return (name, pointTuple)
 
 def getRankForPlayer(driver, playerName):
-    parenLoc = playerName.find('(')
-    shorterName = playerName[0:parenLoc-1]
+    shorterName = nameWithoutParenthesis(playerName)
     return getRankForPlayerRecursive(driver, shorterName, playerName)
+
+def nameWithoutParenthesis(name):
+    parenLoc = name.find('(')
+    if parenLoc == -1:
+        return name.strip()
+    else:
+        shorterName = name[0:parenLoc-1]
+        return shorterName.strip()
 
 def getRankForPlayerRecursive(driver, searchTerm, exactMatchName):
     elem = driver.find_element_by_name("R_Input")
@@ -121,7 +128,7 @@ def getRankForPlayerRecursive(driver, searchTerm, exactMatchName):
             print("Could not find point data for player ", exactMatchName, " even after multiple iterations.  Please insert data manually.")
             return None
     except:
-        print("Could not retrieve data for player " + playerName)
+        print("Could not retrieve data for player ", exactMatchName, ", last search term attempted was ", searchTerm)
         print("Unexpected error :", sys.exc_info()[0], sys.exc_info()[1])
         return None
 

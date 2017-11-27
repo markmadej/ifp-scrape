@@ -239,5 +239,24 @@ class TestIfpModule(unittest.TestCase):
         retrievedPoints = ifppoints.loadPointsFromFile(filename)
         self.assertEqual(combinedPoints, retrievedPoints)
 
+    def test_get_name_without_parenthesis(self):
+        originalNames = [
+            "Jimmy H.",
+            "Mark Madej Test        ",
+            "MARY ELLEN O`BRIEN (TX)",
+            "Lawrence Kim (VA)",
+            "Jennifer Garno (NY)"
+        ]
+        namesWithoutParens = [
+            "Jimmy H.",
+            "Mark Madej Test",
+            "MARY ELLEN O`BRIEN",
+            "Lawrence Kim",
+            "Jennifer Garno"
+        ]
+        for i in range(0, len(originalNames)):
+            name = ifppoints.nameWithoutParenthesis(originalNames[i])
+            self.assertEqual(name, namesWithoutParens[i])
+
 if __name__ == '__main__':
     unittest.main()
