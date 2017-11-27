@@ -123,7 +123,7 @@ def getRankForPlayerRecursive(driver, searchTerm, exactMatchName):
         # This is an expected condition - sometimes the name will not be returned at all.
         # Check the next shorter version of this name, if that exists.
         if len(searchTerm) > 3:
-            return getRankForPlayerRecursive(driver, searchTerm[:-1], exactMatchName)
+            return getRankForPlayerRecursive(driver, searchTerm[:-1].strip(), exactMatchName)
         else:
             print("Could not find point data for player ", exactMatchName, " even after multiple iterations.  Please insert data manually.")
             return None
