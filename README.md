@@ -4,7 +4,7 @@ This is a script designed to scrape player listing / ranking data from the offic
 
 ## I'm not some computer nerd, I just want the data
 
-[Here is a spreadsheet](finalData/ifp_points_2017-11-28.xslx) with the most current IFP points data.
+[Here is a spreadsheet](finalData/ifp_points_2017-11-28.xlsx) with the most current IFP points data.
 
 ## Prerequisites
 
