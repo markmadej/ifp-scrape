@@ -2,6 +2,10 @@
 
 This is a script designed to scrape player listing / ranking data from the official [IFP tour site](http://www.ifptour.com).
 
+## I'm not some computer nerd, I just want the data
+
+[Here is a spreadsheet](finalData/ifp_points_2017-11-28.xslx) with the most current IFP points data.
+
 ## Prerequisites
 
 You will need to have Python installed.  This most recently ran successfully using Python 2.7.14 and I have not tested it on other versions.  You will need to use `pip` to install the `selenium` package and possibly others.  

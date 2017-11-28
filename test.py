@@ -258,5 +258,26 @@ class TestIfpModule(unittest.TestCase):
             name = ifppoints.nameWithoutParenthesis(originalNames[i])
             self.assertEqual(name, namesWithoutParens[i])
 
+    def test_chop_first_name(self):
+        originalNames = [
+            "Jimmy H.",
+            "Mark Madej Test",
+            "MARY ELLEN O`BRIEN (TX)",
+            "Lawrence Kim (VA)",
+            "Jennifer Garno (NY)",
+            "OneName"
+        ]
+        namesWithoutFirstName = [
+            "H.",
+            "Madej Test",
+            "ELLEN O`BRIEN (TX)",
+            "Kim (VA)",
+            "Garno (NY)",
+            None
+        ]
+        for i in range(0, len(originalNames)):
+            name = ifppoints.chopFirstName(originalNames[i])
+            self.assertEqual(name, namesWithoutFirstName[i])
+
 if __name__ == '__main__':
     unittest.main()
