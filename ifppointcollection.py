@@ -109,7 +109,7 @@ def getRankForPlayerRecursive(driver, searchTerm, exactMatchName):
     # First chop off the trailing (state) from the end - doesnt work with IFP interface
 
     elem.send_keys(searchTerm)
-    time.sleep(3)
+    time.sleep(.8)
 
     # Dropdown should be populated.  Find the right item and click on it
     ct = 0

@@ -81,7 +81,18 @@ def loadNamesWithText(driver, searchStr):
     elem = driver.find_element_by_name("R_Input")
     elem.clear()
     elem.send_keys(searchStr)
-    time.sleep(1)
+
+    # Either wait 1 second, or until you see the Loading div.
+    # If it's there, wait until it's gone (or 10 seconds).
+    try:
+        WebDriverWait(driver, .8).until(
+            EC.visibility_of_element_located((By.ID, 'R_LoadingDiv'))
+        )
+    except:
+        # This is fine :dog with burning house:
+        # Seriously though it might just have gone by really fast, ignore this.
+        pass
+
     WebDriverWait(driver, 10).until(
         EC.invisibility_of_element_located((By.ID, 'R_LoadingDiv'))
     )
