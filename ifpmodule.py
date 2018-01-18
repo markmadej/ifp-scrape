@@ -3,6 +3,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 import re
 
@@ -72,6 +73,17 @@ def setup():
     driver.get("http://ifp.everguide.com/commander/tour/public/PlayerProfile.aspx")
     print("Loaded driver, loaded main page.")
     return driver
+
+def setupRemote():
+    try:
+        driver = webdriver.Remote(desired_capabilities=DesiredCapabilities.FIREFOX,
+                              command_executor='http://127.0.0.1:4444/wd/hub')
+        driver.get("http://ifp.everguide.com/commander/tour/public/PlayerProfile.aspx")
+        print "Got remote driver : " + str(driver)
+        return driver
+    except Exception as err:
+        print "Couldn't connect remote : " + str(err)
+        sys.exit(1)
 
 def getUniqueNewNamesOnlyFromAllNamesAndNewList(allNames, newList):
     return newList - allNames

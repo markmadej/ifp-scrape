@@ -34,6 +34,17 @@ First, the script will look for a file named `allNames.txt` in the current direc
 
 As the program runs it will append newly found names to `allNames.txt`.  The script will finish running once it cycles through all alphabetic sequences.  
 
+### Docker!
+
+This now requires [Docker](https://docs.docker.com/engine/installation/).
+
+```
+docker pull selenium/standalone-firefox-debug
+docker run -d -p 4444:4444 --shm-size 2g selenium/standalone-firefox-debug:latest
+```
+
+Run those commands first before running the scripts.
+
 ### Point collection process
 
 To kick off the point collection process, run this command:

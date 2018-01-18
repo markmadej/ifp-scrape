@@ -3,7 +3,7 @@ import ifpmodule
 
 def main():
     print("Starting name crawl process.")
-    driver = ifpmodule.setup()
+    driver = ifpmodule.setupRemote()
     nameCrawl(driver)
     ifpmodule.shutdown(driver)
 
