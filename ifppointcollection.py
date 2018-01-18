@@ -7,10 +7,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.common.alert import Alert
 
 def main():
     print("Starting point collection process.")
-    driver = ifpmodule.setup()
+    driver = ifpmodule.setupRemote()
     pointCrawl(driver)
     ifpmodule.shutdown(driver)
 
@@ -104,9 +105,13 @@ def chopFirstName(name):
 
 def getRankForPlayerRecursive(driver, searchTerm, exactMatchName):
     try:
+        WebDriverWait(driver, 3).until(
+            EC.visibility_of_element_located((By.ID, 'R_Input'))
+        )
         elem = driver.find_element_by_name("R_Input")
     except:
-        print "Exception, couldn't find R_Input element."
+        print "Exception, couldn't find R_Input element.  Will attempt to dismiss alert."
+        Alert(driver).dismiss()
         return None
     elem.clear()
 
