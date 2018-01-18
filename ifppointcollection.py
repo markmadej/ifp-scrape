@@ -103,7 +103,11 @@ def chopFirstName(name):
         return shorterName.strip()
 
 def getRankForPlayerRecursive(driver, searchTerm, exactMatchName):
-    elem = driver.find_element_by_name("R_Input")
+    try:
+        elem = driver.find_element_by_name("R_Input")
+    except:
+        print "Exception, couldn't find R_Input element."
+        return None
     elem.clear()
 
     # First chop off the trailing (state) from the end - doesnt work with IFP interface
