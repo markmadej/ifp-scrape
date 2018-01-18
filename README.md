@@ -34,6 +34,14 @@ First, the script will look for a file named `allNames.txt` in the current direc
 
 As the program runs it will append newly found names to `allNames.txt`.  The script will finish running once it cycles through all alphabetic sequences.  
 
+### Virtual environment
+
+Install virtualenvwrapper per [their installation docs](http://virtualenvwrapper.readthedocs.io/en/latest/install.html).
+```
+pip2 install virtualenvwrapper
+
+```
+
 ### Docker!
 
 This now requires [Docker](https://docs.docker.com/engine/installation/).
