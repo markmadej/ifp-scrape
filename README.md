@@ -34,9 +34,34 @@ First, the script will look for a file named `allNames.txt` in the current direc
 
 As the program runs it will append newly found names to `allNames.txt`.  The script will finish running once it cycles through all alphabetic sequences.  
 
+### Virtual environment
+
+Install virtualenvwrapper per [their installation docs](http://virtualenvwrapper.readthedocs.io/en/latest/install.html).
+```
+pip2 install virtualenvwrapper
+```
+Then add these lines to your .bash_profile or similar:
+```
+export WORKON_HOME=$HOME/.virtualenvs
+export PROJECT_HOME=$HOME/Devel
+source /usr/local/bin/virtualenvwrapper.sh
+```
+
+Then run this (from inside the ifp-scrape directory):
+```
+source ~/.bash_profile
+mkvirtualenv -a $PWD ifp
+```
+
+### Install necessary libraries
+Run this command once inside your virtual environment:
+```
+pip install -r requirements.txt
+```
+
 ### Docker!
 
-This now requires [Docker](https://docs.docker.com/engine/installation/).
+You have the option to run using Firefox windows that pop up on your machine, or you can [install Docker](https://docs.docker.com/engine/installation/).  If you choose the Docker route, you need to run these commands before starting the name/point scraping scripts, and you also need to run the scripts with a `-docker` flag.
 
 ```
 docker pull selenium/standalone-firefox-debug
@@ -47,10 +72,15 @@ Run those commands first before running the scripts.
 
 ### Point collection process
 
-To kick off the point collection process, run this command:
+To kick off the point collection process with local Firefox windows, run this:
 
 ```
-python2 ifppointcollection.py
+python2 ifppointcollection.py -local
+```
+
+To run the script using Docker, use this command:
+```
+python2 ifppointcollection.py -docker
 ```
 
 This script loads all names from the `allNames.txt` file (from the ifpnamecollection process).  It then loads everything in `allPoints.txt`, the aggregation of names along with the 4 associated points.  The script then loops through all names found in `allNames.txt` but not `allPoints.txt`, and it attempts to retrieve that data.  The script finishes when all of those are attempted.  
