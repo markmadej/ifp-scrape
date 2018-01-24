@@ -11,7 +11,7 @@ from selenium.webdriver.common.alert import Alert
 
 def main():
     print("Starting point collection process.")
-    driver = ifpmodule.setupRemote()
+    driver = ifpmodule.getCorrectDriver()
     pointCrawl(driver)
     ifpmodule.shutdown(driver)
 

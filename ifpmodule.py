@@ -6,6 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
 import re
+import sys
 
 def shutdown(driver):
     driver.close()
@@ -66,6 +67,19 @@ def appendNamesToFile(names, filename):
         except:
             print("error writing name : " + name)
     f.close()
+
+def getCorrectDriver():
+    if len(sys.argv) < 2:
+        print "You need to specify the type of Selenium run you want with a -docker or -local flag."
+        sys.exit(1)
+    if (sys.argv[1] == '-docker'):
+        driver = setupRemote()
+        return driver
+    if (sys.argv[1] == '-local'):
+        driver = setup()
+        return driver
+    print "Bad Selenium flag.  Use -docker or -local flag."
+    sys.exit(1)
 
 def setup():
     print("Entering setup.")
